@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  h1 #{title} #{author.fullname}  
+  p #{author.date_of_birth_formatted} - #{author.date_of_death_formatted}
+
+  dl 
+    each book in author_books
+      dt
+        a(href=book.url) #{book.title}
+      dd #{book.summary}
+
+    else 
+      p This author has no books.
+      
