@@ -1,8 +1,13 @@
 const Genre = require('../models/genre');
 const { body, validator, validationResult } = require('express-validator');
 
-exports.genre_list = function(req, res) {
-    res.send('NOT IMPLEMENTED: Genre list');
+exports.genre_list = function(req, res, next) {
+    Genre.find()
+        .exec(function (err, list) {
+            if (err) return next(err);
+
+            res.render('genre_list', { title: 'Genre List', genre_list: list });
+        });
 };
 
 exports.genre_detail = function(req, res) {
