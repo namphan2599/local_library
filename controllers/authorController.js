@@ -117,7 +117,7 @@ exports.author_delete_post = function(req, res, next) {
         
         if (results.author_books.length > 0) {
 
-            // cant delete author while having some books
+            // cant delete this author while having some books
             res.render('author_delete', { title: 'Delete Author', author: results.author, author_books: results.author_books });
             return;
         } else {
