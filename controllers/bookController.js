@@ -25,8 +25,8 @@ exports.index = function(req, res) {
         genre_count: function(callback) {
             Genre.countDocuments({}, callback);
         },
-    }, function(err, result){
-        res.render('index', { title: 'Local Library Home', error: err, data: result});
+    }, function(err, results){
+        res.render('index', { title: 'Local Library Home', error: err, data: results});
     });
     
 };
@@ -166,7 +166,7 @@ exports.book_delete_get = function(req, res) {
     }, function(err, results) {
         if (err) return next(err);
 
-        if (results.genre === null) {
+        if (results.book === null) {
             res.redirect('/catalog/books');
         }
 
