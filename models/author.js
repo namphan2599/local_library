@@ -28,7 +28,7 @@ AuthorSchema
     .virtual('date_of_birth_formatted')
     .get(function () {
         return this.date_of_birth ? 
-            DateTime.fromJSDate(this.data_of_birth).toLocaleString(DateTime.DATE_MED) :
+            DateTime.fromJSDate(this.date_of_birth).toLocaleString(DateTime.DATE_MED) :
             'unknown';
     });
 
