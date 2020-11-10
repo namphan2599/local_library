@@ -110,10 +110,71 @@ exports.bookinstance_delete_post = function(req, res, next) {
 
 };
 
-exports.bookinstance_update_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: BookInstance update GET');
+exports.bookinstance_update_get = function(req, res, next) {
+    
+    async.parallel({
+        bookInstance: function(callback) {
+            BookInstance.findById(req.params.id).populate('book').exec(callback);
+        },
+        books: function(callback) {
+            Book.find(callback);
+        }
+    }, function(err, results) {
+        if (err) return next(err);
+
+        res.render('bookinstance_form', { 
+            title: 'Update Book instance',
+            book_list: results.books,
+            bookinstance: results.bookInstance
+        })
+
+    });
+
+
 };
 
-exports.bookinstance_update_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: BookInstance update POST');
-};
+exports.bookinstance_update_post = [
+    body('book', 'Book must be specified').trim().isLength({ min: 1 }).escape(),
+    body('imprint', 'Imprint must be specified').trim().isLength({ min: 1 }).escape(),
+    body('due_back', 'Invalid date').optional({ checkFalsy: true }).isISO8601().toDate(),
+
+    (req, res, next) => {
+
+        const errors = validationResult(req);
+
+        let bookInstance = new BookInstance({
+            book: req.body.book,
+            imprint: req.body.imprint,
+            status: req.body.status,
+            due_back: req.body.due_back,
+            _id: req.params.id
+        });
+
+        if (!errors.isEmpty()) {
+
+            Book.find({}).exec(function(err, books) {
+
+                if (err) return next(err);
+
+                res.render('bookinstance_form' ,{
+                    title: 'Update Book instance',
+                    book_list: books,
+                    bookinstance: bookInstance
+                });
+
+            });
+
+            return;
+
+        } else {
+
+            BookInstance.findByIdAndUpdate(req.params.id, bookInstance, {}, (err, updatedBookInstance) => {
+                if (err) return next(err);
+
+                res.redirect(updatedBookInstance.url);
+            });
+
+        }
+
+    }
+];

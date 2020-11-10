@@ -156,20 +156,14 @@ exports.genre_update_post = [
         });
 
         if (!errors.isEmpty()) {
-            async.parallel({
-                genre: function(callback) {
-                    Genre.findById(req.params.id).exec(callback);
-                }
-            }, function(err, results) {
-                if (err) return next(err);
 
-                res.render({ 
-                    title: 'Update Genre', 
-                    genre: results.genre, 
-                    errors: errors.array()
-                });
-
+            res.render({ 
+                title: 'Update Genre', 
+                genre: results.genre, 
+                errors: errors.array()
             });
+
+            return;
         } else {
             Genre.findByIdAndUpdate(req.params.id, genre, {}, (err, theGenre) => {
                 if (err) return next(err);
@@ -177,6 +171,5 @@ exports.genre_update_post = [
                 res.redirect(theGenre.url);
             });
         }
-
     }
 ];

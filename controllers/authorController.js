@@ -161,10 +161,6 @@ exports.author_update_post = [
 
         const errors = validationResult(req);
 
-    //     first_name: {type: String, required: true, maxlength: 100},
-    // family_name: {type: String, required: true, maxlength: 100},
-    // date_of_birth: {type: Date},
-    // date_of_death: {type: Date},
         let author = new Author({
             first_name: req.body.first_name,
             family_name: req.body.family_name,
@@ -175,21 +171,12 @@ exports.author_update_post = [
 
         if (!errors.isEmpty()) {
 
-            async.parallel({
-                author: function(callback) {
-                    Author.findById(req.params.id).exec(callback);
-                }
-            }, function(err, results) {
-
-                if (err) return next(err);
-
-                res.render('author_form', { 
-                    title: 'Update Author', 
-                    author: results.author, 
-                    errors: errors.array() 
-                });
-
+            res.render('author_form', { 
+                title: 'Update Author', 
+                author: results.author, 
+                errors: errors.array() 
             });
+            return;
 
         } else {
 
@@ -198,7 +185,6 @@ exports.author_update_post = [
 
                 res.redirect(author.url);
             });
-
         }
 
     }
